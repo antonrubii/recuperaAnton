@@ -28,10 +28,11 @@ class Conexion:
     def listadoUsuarios(tipo="Todos"):
         listado = []
         query = QtSql.QSqlQuery()
+        # CAMBIAMOS EL ORDEN: nombre primero, luego dni para que coincida con la tabla
         if tipo == "Todos":
-            query.prepare("SELECT dni, nombre, email, movil, tipo FROM usuarios")
+            query.prepare("SELECT nombre, dni, email, movil, tipo FROM usuarios")
         else:
-            query.prepare("SELECT dni, nombre, email, movil, tipo FROM usuarios WHERE tipo = :tipo")
+            query.prepare("SELECT nombre, dni, email, movil, tipo FROM usuarios WHERE tipo = :tipo")
             query.bindValue(":tipo", tipo)
 
         if query.exec():
@@ -60,11 +61,23 @@ class Conexion:
         query.bindValue(":tipo", datos[5])
         return query.exec()
 
+
     @staticmethod
     def cargarUnUsuario(dni):
-        query = QtSql.QSqlQuery()
-        query.prepare("SELECT * FROM usuarios WHERE dni = :dni")
-        query.bindValue(":dni", dni)
-        if query.exec() and query.next():
-            return [query.value(i) for i in range(6)]
-        return None
+        """
+        QUÉ HACE: Busca en la tabla 'usuarios' todos los datos de un DNI específico.
+        PARA EL EXAMEN: Es la función que permite recuperar los datos para el formulario.
+        """
+        try:
+            query = QtSql.QSqlQuery()
+            query.prepare("SELECT * FROM usuarios WHERE dni = :dni")
+            query.bindValue(":dni", str(dni))
+
+            if query.exec() and query.next():
+                # Retornamos una lista con: [dni, nombre, direccion, email, movil, tipo]
+                # El número 6 es porque tienes 6 columnas en la tabla usuarios
+                return [query.value(i) for i in range(6)]
+            return None
+        except Exception as e:
+            print("Error SQL en cargarUnUsuario:", e)
+            return None

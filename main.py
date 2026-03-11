@@ -32,9 +32,13 @@ class Main(QtWidgets.QMainWindow):
         globals.ui.tabUsuarios.clicked.connect(Usuarios.selUsuario)
         globals.ui.lineDni.editingFinished.connect(self.checkDni)
         globals.ui.lineMovil.editingFinished.connect(self.checkMovil)
+        globals.ui.tabUsuarios.clicked.connect(Usuarios.cargarUsuario)
+
 
         # 5. Cargar la tabla al iniciar
         Usuarios.cargarTabla()
+
+        globals.ui.tabUsuarios.clicked.connect(Usuarios.cargarUsuario)
 
     def checkDni(self):
         dni = globals.ui.lineDni.text()

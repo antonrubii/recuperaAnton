@@ -106,3 +106,33 @@ class Usuarios:
             QtWidgets.QMessageBox.warning(None, "Campos obligatorios", "Nombre, Email y DNI son necesarios")
             return False
         return True
+
+    @staticmethod
+    def cargarUsuario():
+        try:
+            # 1. Obtenemos la fila seleccionada
+            row = globals.ui.tabUsuarios.currentRow()
+            if row < 0: return
+
+            # 2. Extraemos el DNI de la Columna 1 (ahora sí es la correcta)
+            item_dni = globals.ui.tabUsuarios.item(row, 1)
+            if item_dni is None: return
+            dni = item_dni.text()
+
+            # 3. Consultamos la BD
+            registro = Conexion.cargarUnUsuario(dni)
+
+            if registro:
+                # registro[0]=dni, registro[1]=nombre, registro[2]=dir, registro[3]=email, registro[4]=movil, registro[5]=tipo
+                globals.ui.lineDni.setText(str(registro[0]))
+                globals.ui.lineNombre.setText(str(registro[1]))
+                globals.ui.lineDireccion.setText(str(registro[2]))
+                globals.ui.lineEmail.setText(str(registro[3]))
+                globals.ui.lineMovil.setText(str(registro[4]))
+                globals.ui.cmbTipo.setCurrentText(str(registro[5]))
+
+                # Bloqueo de seguridad para que no cambien el DNI al editar
+                globals.ui.lineDni.setEnabled(False)
+                globals.ui.lineDni.setStyleSheet("background-color: #f0f0f0;")
+        except Exception as e:
+            print("Error en cargarUsuario:", e)
