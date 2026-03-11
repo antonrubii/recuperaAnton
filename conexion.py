@@ -1,0 +1,70 @@
+from PyQt6 import QtSql, QtWidgets
+
+
+class Conexion:
+    @staticmethod
+    def db_connect(filename):
+        db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
+        db.setDatabaseName(filename)
+        if not db.open():
+            QtWidgets.QMessageBox.critical(None, 'Error', 'No se pudo abrir la base de datos')
+            return False
+        return True
+
+    @staticmethod
+    def addUsuario(nuevoUser):
+        query = QtSql.QSqlQuery()
+        query.prepare("INSERT INTO usuarios (dni, nombre, direccion, email, movil, tipo) "
+                      "VALUES (:dni, :nombre, :dir, :mail, :movil, :tipo)")
+        query.bindValue(":dni", nuevoUser[0])
+        query.bindValue(":nombre", nuevoUser[1])
+        query.bindValue(":dir", nuevoUser[2])
+        query.bindValue(":mail", nuevoUser[3])
+        query.bindValue(":movil", nuevoUser[4])
+        query.bindValue(":tipo", nuevoUser[5])
+        return query.exec()
+
+    @staticmethod
+    def listadoUsuarios(tipo="Todos"):
+        listado = []
+        query = QtSql.QSqlQuery()
+        if tipo == "Todos":
+            query.prepare("SELECT dni, nombre, email, movil, tipo FROM usuarios")
+        else:
+            query.prepare("SELECT dni, nombre, email, movil, tipo FROM usuarios WHERE tipo = :tipo")
+            query.bindValue(":tipo", tipo)
+
+        if query.exec():
+            while query.next():
+                row = [query.value(i) for i in range(5)]
+                listado.append(row)
+        return listado
+
+    @staticmethod
+    def delUsuario(dni):
+        query = QtSql.QSqlQuery()
+        query.prepare("DELETE FROM usuarios WHERE dni = :dni")
+        query.bindValue(":dni", dni)
+        return query.exec()
+
+    @staticmethod
+    def modifUsuario(datos):
+        query = QtSql.QSqlQuery()
+        query.prepare(
+            "UPDATE usuarios SET nombre=:nombre, direccion=:dir, email=:mail, movil=:movil, tipo=:tipo WHERE dni=:dni")
+        query.bindValue(":dni", datos[0])
+        query.bindValue(":nombre", datos[1])
+        query.bindValue(":dir", datos[2])
+        query.bindValue(":mail", datos[3])
+        query.bindValue(":movil", datos[4])
+        query.bindValue(":tipo", datos[5])
+        return query.exec()
+
+    @staticmethod
+    def cargarUnUsuario(dni):
+        query = QtSql.QSqlQuery()
+        query.prepare("SELECT * FROM usuarios WHERE dni = :dni")
+        query.bindValue(":dni", dni)
+        if query.exec() and query.next():
+            return [query.value(i) for i in range(6)]
+        return None

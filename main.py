@@ -1,42 +1,61 @@
 import sys
+import globals
 from PyQt6 import QtWidgets
 from window import Ui_MainWindow
 from events import Events
+from usuarios import Usuarios  # Importamos la lógica de usuarios
+from conexion import Conexion # Importamos la conexión
 
 class Main(QtWidgets.QMainWindow):
-
     def __init__(self):
         super().__init__()
+        globals.ui = Ui_MainWindow()
+        globals.ui.setupUi(self)
 
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        # 1. Inicializar la base de datos
+        # Creamos la carpeta data si no existe y conectamos
+        import os
+        if not os.path.exists('data'):
+            os.makedirs('data')
+        Conexion.db_connect("data/recupera.db")
 
-        # conectar menú salir
-        self.ui.actionSalir.triggered.connect(Events.salir)
+        # 2. Conectar menús
+        globals.ui.actionSalir.triggered.connect(Events.salir)
+        globals.ui.menuAcerca_de.aboutToShow.connect(Events.acerca_de)
 
-        # validaciones
-        self.ui.lineDni.editingFinished.connect(self.checkDni)
-        self.ui.lineMovil.editingFinished.connect(self.checkMovil)
+        # 3. Conectar botones del CRUD (Usuarios)
+        globals.ui.btnAlta.clicked.connect(Usuarios.addUsuario)
+        globals.ui.btnModif.clicked.connect(Usuarios.modifUsuario)
+        globals.ui.btnBaja.clicked.connect(Usuarios.delUsuario)
+
+        # 4. Eventos de la Tabla y Validaciones
+        globals.ui.tabUsuarios.clicked.connect(Usuarios.selUsuario)
+        globals.ui.lineDni.editingFinished.connect(self.checkDni)
+        globals.ui.lineMovil.editingFinished.connect(self.checkMovil)
+
+        # 5. Cargar la tabla al iniciar
+        Usuarios.cargarTabla()
 
     def checkDni(self):
-        dni = self.ui.lineDni.text()
-
+        dni = globals.ui.lineDni.text()
         if Events.validarDNI(dni):
-            self.ui.lineDni.setStyleSheet("background-color: lightgreen;")
+            globals.ui.lineDni.setStyleSheet("background-color: #C8E6C9;")
         else:
-            self.ui.lineDni.setStyleSheet("background-color: red;")
+            globals.ui.lineDni.setStyleSheet("background-color: #FFCDD2;")
+            globals.ui.lineDni.setText("")
+            globals.ui.lineDni.setPlaceholderText("DNI INVÁLIDO")
 
     def checkMovil(self):
-        movil = self.ui.lineMovil.text()
-
+        movil = globals.ui.lineMovil.text()
         if Events.validarMovil(movil):
-            self.ui.lineMovil.setStyleSheet("background-color: lightgreen;")
+            globals.ui.lineMovil.setStyleSheet("background-color: #C8E6C9;")
         else:
-            self.ui.lineMovil.setStyleSheet("background-color: red;")
+            globals.ui.lineMovil.setStyleSheet("background-color: #FFCDD2;")
+            globals.ui.lineMovil.setText("")
+            globals.ui.lineMovil.setPlaceholderText("Móvil erróneo")
 
-
-app = QtWidgets.QApplication(sys.argv)
-window = Main()
-window.show()
-
-sys.exit(app.exec())
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    window = Main()
+    window.show()
+    sys.exit(app.exec())
