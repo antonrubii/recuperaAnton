@@ -6,21 +6,19 @@ from conexion import Conexion
 class Usuarios:
     @staticmethod
     def limpiarCampos():
-        """Limpia los campos del formulario"""
         globals.ui.lineDni.setText("")
         globals.ui.lineNombre.setText("")
         globals.ui.lineDireccion.setText("")
         globals.ui.lineEmail.setText("")
         globals.ui.lineMovil.setText("")
+        globals.ui.lineDni.setEnabled(True)
         globals.ui.lineDni.setStyleSheet("background-color: white;")
-        globals.ui.lineMovil.setStyleSheet("background-color: white;")
 
     @staticmethod
-    def cargarTabla():
-        """Refresca la tabla con los datos de la BD"""
+    def cargarTabla(tipo="Todos"):
+        """Renderizado dinámico de la tabla"""
         try:
-            # Puedes filtrar según el combo si quieres (Opcional para nota)
-            listado = Conexion.listadoUsuarios("Todos")
+            listado = Conexion.listadoUsuarios(tipo)
             globals.ui.tabUsuarios.setRowCount(0)
             for index, registro in enumerate(listado):
                 globals.ui.tabUsuarios.insertRow(index)
@@ -31,9 +29,60 @@ class Usuarios:
 
     @staticmethod
     def addUsuario():
-        """Guarda un nuevo usuario"""
         if not Usuarios.validarCampos(): return
 
+        datos = [
+            globals.ui.lineNombre.text(),
+            globals.ui.lineDni.text(),
+            globals.ui.lineDireccion.text(),
+            globals.ui.lineEmail.text(),
+            globals.ui.lineMovil.text(),
+            globals.ui.cmbTipo.currentText()
+        ]
+
+        if Conexion.addUsuario(datos):
+            QtWidgets.QMessageBox.information(None, "Aviso", "Usuario guardado")
+            Usuarios.cargarTabla()
+            Usuarios.limpiarCampos()
+        else:
+            QtWidgets.QMessageBox.warning(None, "Error", "DNI repetido o error en BD")
+
+        # usuarios.py (al final de la clase Usuarios)
+
+    @staticmethod
+    def cargarUsuario():
+            try:
+                row = globals.ui.tabUsuarios.currentRow()
+                if row < 0: return
+
+                # El DNI está en la columna 1 (Asegúrate de que en la tabla el DNI sea la col 1)
+                dni = globals.ui.tabUsuarios.item(row, 1).text()
+                registro = Conexion.cargarUnUsuario(dni)
+
+                if registro:
+                    globals.ui.lineDni.setText(str(registro[0]))
+                    globals.ui.lineNombre.setText(str(registro[1]))
+                    globals.ui.lineDireccion.setText(str(registro[2]))
+                    globals.ui.lineEmail.setText(str(registro[3]))
+                    globals.ui.lineMovil.setText(str(registro[4]))
+                    globals.ui.cmbTipo.setCurrentText(str(registro[5]))
+
+                    # Bloqueo para evitar editar la clave primaria
+                    globals.ui.lineDni.setEnabled(False)
+                    globals.ui.lineDni.setStyleSheet("background-color: #e1e1e1;")
+            except Exception as e:
+                print("Error en cargarUsuario:", e)
+    @staticmethod
+    def delUsuario():
+        dni = globals.ui.lineDni.text()
+        if not dni: return
+        if Conexion.delUsuario(dni):
+            QtWidgets.QMessageBox.information(None, "Aviso", "Usuario borrado")
+            Usuarios.cargarTabla()
+            Usuarios.limpiarCampos()
+
+    @staticmethod
+    def modifUsuario():
         datos = [
             globals.ui.lineDni.text(),
             globals.ui.lineNombre.text(),
@@ -42,97 +91,17 @@ class Usuarios:
             globals.ui.lineMovil.text(),
             globals.ui.cmbTipo.currentText()
         ]
-
-        if Conexion.addUsuario(datos):
-            QtWidgets.QMessageBox.information(None, "Éxito", "Usuario guardado correctamente")
-            Usuarios.cargarTabla()
-            Usuarios.limpiarCampos()
-        else:
-            QtWidgets.QMessageBox.warning(None, "Error", "No se pudo guardar. ¿DNI duplicado?")
-
-    @staticmethod
-    def selUsuario():
-        """Carga los datos de la fila seleccionada en el formulario"""
-        try:
-            row = globals.ui.tabUsuarios.currentRow()
-            dni = globals.ui.tabUsuarios.item(row, 1).text()  # Columna 1 es DNI según tu UI
-            registro = Conexion.cargarUnUsuario(dni)
-            if registro:
-                globals.ui.lineDni.setText(str(registro[0]))
-                globals.ui.lineNombre.setText(str(registro[1]))
-                globals.ui.lineDireccion.setText(str(registro[2]))
-                globals.ui.lineEmail.setText(str(registro[3]))
-                globals.ui.lineMovil.setText(str(registro[4]))
-                globals.ui.cmbTipo.setCurrentText(str(registro[5]))
-        except Exception as e:
-            print("Error seleccionando usuario", e)
-
-    @staticmethod
-    def delUsuario():
-        """Borra el usuario del DNI actual"""
-        dni = globals.ui.lineDni.text()
-        if not dni: return
-
-        mbox = QtWidgets.QMessageBox.question(None, "Confirmar", f"¿Borrar al usuario {dni}?",
-                                              QtWidgets.QMessageBox.StandardButton.Yes |
-                                              QtWidgets.QMessageBox.StandardButton.No)
-
-        if mbox == QtWidgets.QMessageBox.StandardButton.Yes:
-            if Conexion.delUsuario(dni):
-                QtWidgets.QMessageBox.information(None, "Ok", "Usuario eliminado")
-                Usuarios.cargarTabla()
-                Usuarios.limpiarCampos()
-
-    @staticmethod
-    def modifUsuario():
-        """Actualiza los datos del usuario"""
-        dni = globals.ui.lineDni.text()
-        datos = [
-            dni,
-            globals.ui.lineNombre.text(),
-            globals.ui.lineDireccion.text(),
-            globals.ui.lineEmail.text(),
-            globals.ui.lineMovil.text(),
-            globals.ui.cmbTipo.currentText()
-        ]
-
         if Conexion.modifUsuario(datos):
-            QtWidgets.QMessageBox.information(None, "Ok", "Datos actualizados")
+            QtWidgets.QMessageBox.information(None, "Aviso", "Usuario modificado")
             Usuarios.cargarTabla()
 
     @staticmethod
     def validarCampos():
-        if not globals.ui.lineNombre.text() or not globals.ui.lineEmail.text() or not globals.ui.lineDni.text():
-            QtWidgets.QMessageBox.warning(None, "Campos obligatorios", "Nombre, Email y DNI son necesarios")
+        nombre = globals.ui.lineNombre.text()
+        email = globals.ui.lineEmail.text()
+        tipo = globals.ui.cmbTipo.currentText()
+
+        if not nombre or not email or not tipo:
+            QtWidgets.QMessageBox.warning(None, "Validación", "Nombre, Email y Tipo son obligatorios")
             return False
         return True
-
-    @staticmethod
-    def cargarUsuario():
-        try:
-            # 1. Obtenemos la fila seleccionada
-            row = globals.ui.tabUsuarios.currentRow()
-            if row < 0: return
-
-            # 2. Extraemos el DNI de la Columna 1 (ahora sí es la correcta)
-            item_dni = globals.ui.tabUsuarios.item(row, 1)
-            if item_dni is None: return
-            dni = item_dni.text()
-
-            # 3. Consultamos la BD
-            registro = Conexion.cargarUnUsuario(dni)
-
-            if registro:
-                # registro[0]=dni, registro[1]=nombre, registro[2]=dir, registro[3]=email, registro[4]=movil, registro[5]=tipo
-                globals.ui.lineDni.setText(str(registro[0]))
-                globals.ui.lineNombre.setText(str(registro[1]))
-                globals.ui.lineDireccion.setText(str(registro[2]))
-                globals.ui.lineEmail.setText(str(registro[3]))
-                globals.ui.lineMovil.setText(str(registro[4]))
-                globals.ui.cmbTipo.setCurrentText(str(registro[5]))
-
-                # Bloqueo de seguridad para que no cambien el DNI al editar
-                globals.ui.lineDni.setEnabled(False)
-                globals.ui.lineDni.setStyleSheet("background-color: #f0f0f0;")
-        except Exception as e:
-            print("Error en cargarUsuario:", e)

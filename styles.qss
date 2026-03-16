@@ -1,0 +1,85 @@
+/* Configuración General */
+QMainWindow {
+    background-color: #FFFFFF; /* Fondo blanco puro como la imagen */
+}
+
+QWidget {
+    font-family: "Segoe UI", Arial;
+    font-size: 13px;
+    color: #444;
+}
+
+/* El panel de las pestañas */
+QTabWidget::pane {
+    border: 1px solid #E0E0E0;
+    border-radius: 10px;
+    background-color: white;
+}
+
+QTabBar::tab {
+    background: transparent;
+    padding: 8px 20px;
+    color: #888;
+    font-weight: bold;
+}
+
+QTabBar::tab:selected {
+    color: #007AFF;
+    border-bottom: 2px solid #007AFF;
+}
+
+/* --- BOTONES CORREGIDOS --- */
+QPushButton {
+    background-color: #007AFF; /* Azul Apple */
+    color: white;              /* Texto Blanco */
+    border-radius: 6px;
+    padding: 2px 10px;         /* Mucho menos padding arriba/abajo */
+    font-weight: bold;
+    font-size: 12px;
+    min-height: 28px;          /* Forzamos una altura mínima para que quepa la letra */
+}
+
+QPushButton:hover {
+    background-color: #0056b3;
+}
+
+/* Botón Eliminar (Rojo suave) */
+#btnBaja {
+    background-color: #FF3B30;
+    color: white;
+}
+
+#btnBaja:hover {
+    background-color: #C62828;
+}
+
+/* --- INPUTS (Cajas de texto) --- */
+QLineEdit, QComboBox {
+    border: 1px solid #D1D1D6;
+    border-radius: 6px;
+    padding: 2px 8px;
+    background-color: #FBFBFD;
+    color: #1D1D1F;
+}
+
+QLineEdit:focus {
+    border: 1px solid #007AFF;
+    background-color: white;
+}
+
+/* --- TABLA --- */
+QTableWidget {
+    border: none;
+    gridline-color: #F2F2F7;
+    selection-background-color: #E8F2FF;
+    selection-color: #007AFF;
+}
+
+QHeaderView::section {
+    background-color: white;
+    padding: 8px;
+    border: none;
+    border-bottom: 1px solid #D1D1D6;
+    font-weight: bold;
+    color: #1D1D1F;
+}

@@ -35,3 +35,16 @@ class Events:
     def validarMovil(telefono):
         """ Valida que tenga 9 dígitos y empiece por 6 o 7 """
         return bool(re.match(r"^[67]\d{8}$", telefono))
+
+    def resizeTabCustomer(self):
+        try:
+            # Esto quita las líneas feas de la tabla y la hace parecer una lista web
+            globals.ui.tabUsuarios.setShowGrid(False)  # <--- CRÍTICO
+            globals.ui.tabUsuarios.setAlternatingRowColors(True)
+            globals.ui.tabUsuarios.verticalHeader().setVisible(False)  # Quita los números de fila (1, 2, 3...)
+
+            # Ajusta el ancho para que no haya huecos blancos
+            header = globals.ui.tabUsuarios.horizontalHeader()
+            header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
+        except Exception as e:
+            print(e)

@@ -1,6 +1,5 @@
 from PyQt6 import QtSql, QtWidgets
 
-
 class Conexion:
     @staticmethod
     def db_connect(filename):
@@ -14,10 +13,10 @@ class Conexion:
     @staticmethod
     def addUsuario(nuevoUser):
         query = QtSql.QSqlQuery()
-        query.prepare("INSERT INTO usuarios (dni, nombre, direccion, email, movil, tipo) "
-                      "VALUES (:dni, :nombre, :dir, :mail, :movil, :tipo)")
-        query.bindValue(":dni", nuevoUser[0])
-        query.bindValue(":nombre", nuevoUser[1])
+        query.prepare("INSERT INTO usuarios (nombre, dni, direccion, email, movil, tipo) "
+                      "VALUES (:nombre, :dni, :dir, :mail, :movil, :tipo)")
+        query.bindValue(":nombre", nuevoUser[0])
+        query.bindValue(":dni", nuevoUser[1])
         query.bindValue(":dir", nuevoUser[2])
         query.bindValue(":mail", nuevoUser[3])
         query.bindValue(":movil", nuevoUser[4])
@@ -28,11 +27,10 @@ class Conexion:
     def listadoUsuarios(tipo="Todos"):
         listado = []
         query = QtSql.QSqlQuery()
-        # CAMBIAMOS EL ORDEN: nombre primero, luego dni para que coincida con la tabla
         if tipo == "Todos":
-            query.prepare("SELECT nombre, dni, email, movil, tipo FROM usuarios")
+            query.prepare("SELECT nombre, dni, email, movil, tipo FROM usuarios ORDER BY nombre")
         else:
-            query.prepare("SELECT nombre, dni, email, movil, tipo FROM usuarios WHERE tipo = :tipo")
+            query.prepare("SELECT nombre, dni, email, movil, tipo FROM usuarios WHERE tipo = :tipo ORDER BY nombre")
             query.bindValue(":tipo", tipo)
 
         if query.exec():
@@ -42,6 +40,18 @@ class Conexion:
         return listado
 
     @staticmethod
+    def modifUsuario(datos):
+        query = QtSql.QSqlQuery()
+        query.prepare("UPDATE usuarios SET nombre=:nombre, direccion=:dir, email=:mail, movil=:movil, tipo=:tipo WHERE dni=:dni")
+        query.bindValue(":nombre", datos[1])
+        query.bindValue(":dir", datos[2])
+        query.bindValue(":mail", datos[3])
+        query.bindValue(":movil", datos[4])
+        query.bindValue(":tipo", datos[5])
+        query.bindValue(":dni", datos[0])
+        return query.exec()
+
+    @staticmethod
     def delUsuario(dni):
         query = QtSql.QSqlQuery()
         query.prepare("DELETE FROM usuarios WHERE dni = :dni")
@@ -49,35 +59,10 @@ class Conexion:
         return query.exec()
 
     @staticmethod
-    def modifUsuario(datos):
-        query = QtSql.QSqlQuery()
-        query.prepare(
-            "UPDATE usuarios SET nombre=:nombre, direccion=:dir, email=:mail, movil=:movil, tipo=:tipo WHERE dni=:dni")
-        query.bindValue(":dni", datos[0])
-        query.bindValue(":nombre", datos[1])
-        query.bindValue(":dir", datos[2])
-        query.bindValue(":mail", datos[3])
-        query.bindValue(":movil", datos[4])
-        query.bindValue(":tipo", datos[5])
-        return query.exec()
-
-
-    @staticmethod
     def cargarUnUsuario(dni):
-        """
-        QUÉ HACE: Busca en la tabla 'usuarios' todos los datos de un DNI específico.
-        PARA EL EXAMEN: Es la función que permite recuperar los datos para el formulario.
-        """
-        try:
-            query = QtSql.QSqlQuery()
-            query.prepare("SELECT * FROM usuarios WHERE dni = :dni")
-            query.bindValue(":dni", str(dni))
-
-            if query.exec() and query.next():
-                # Retornamos una lista con: [dni, nombre, direccion, email, movil, tipo]
-                # El número 6 es porque tienes 6 columnas en la tabla usuarios
-                return [query.value(i) for i in range(6)]
-            return None
-        except Exception as e:
-            print("Error SQL en cargarUnUsuario:", e)
-            return None
+        query = QtSql.QSqlQuery()
+        query.prepare("SELECT dni, nombre, direccion, email, movil, tipo FROM usuarios WHERE dni = :dni")
+        query.bindValue(":dni", dni)
+        if query.exec() and query.next():
+            return [query.value(i) for i in range(6)]
+        return None
