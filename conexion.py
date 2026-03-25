@@ -40,6 +40,20 @@ class Conexion:
         return listado
 
     @staticmethod
+    def listadoUsuariosPDF():
+        """Obtiene los usuarios ordenados por nombre para el informe PDF"""
+        listado = []
+        query = QtSql.QSqlQuery()
+        # Seleccionamos los campos que pide el PDF en orden alfabético
+        query.prepare("SELECT nombre, email, movil, tipo FROM usuarios ORDER BY nombre ASC")
+
+        if query.exec():
+            while query.next():
+                row = [query.value(i) for i in range(4)]
+                listado.append(row)
+        return listado
+
+    @staticmethod
     def modifUsuario(datos):
         query = QtSql.QSqlQuery()
         query.prepare("UPDATE usuarios SET nombre=:nombre, direccion=:dir, email=:mail, movil=:movil, tipo=:tipo WHERE dni=:dni")
