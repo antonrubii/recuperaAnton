@@ -17,10 +17,10 @@
    <widget class="QTabWidget" name="panPrincipal">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>30</y>
-      <width>1502</width>
-      <height>821</height>
+      <x>20</x>
+      <y>70</y>
+      <width>1131</width>
+      <height>641</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -30,103 +30,17 @@
      <attribute name="title">
       <string>Usuarios</string>
      </attribute>
-     <widget class="QTableWidget" name="tabUsuarios">
-      <property name="geometry">
-       <rect>
-        <x>290</x>
-        <y>270</y>
-        <width>861</width>
-        <height>491</height>
-       </rect>
-      </property>
-      <column>
-       <property name="text">
-        <string>Nombre</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>DNI</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Email</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Mobil</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Tipo</string>
-       </property>
-      </column>
-     </widget>
      <widget class="QWidget" name="">
       <property name="geometry">
        <rect>
-        <x>230</x>
-        <y>20</y>
-        <width>611</width>
-        <height>161</height>
+        <x>160</x>
+        <y>40</y>
+        <width>831</width>
+        <height>120</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineNombre">
-         <property name="minimumSize">
-          <size>
-           <width>250</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>250</width>
-           <height>25</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="lblNombre">
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>60</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Nombre :</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <widget class="QLineEdit" name="lineEmail">
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>25</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="4">
+       <item row="0" column="3">
         <widget class="QLineEdit" name="lineMovil">
          <property name="minimumSize">
           <size>
@@ -142,59 +56,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="lblDni">
-         <property name="text">
-          <string>DNI :</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="lblDireccion">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>60</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Direccion :</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="lineDireccion">
-         <property name="maximumSize">
-          <size>
-           <width>300</width>
-           <height>25</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineDni">
-         <property name="minimumSize">
-          <size>
-           <width>90</width>
-           <height>25</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>90</width>
-           <height>25</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
+       <item row="0" column="2" alignment="Qt::AlignRight">
         <widget class="QLabel" name="lblMovil">
          <property name="minimumSize">
           <size>
@@ -216,7 +78,49 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="4">
+       <item row="0" column="0">
+        <widget class="QLabel" name="lblDni">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>DNI :</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="lblDireccion">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Direccion :</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="lblTipo">
+         <property name="text">
+          <string>Tipo :</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
         <widget class="QComboBox" name="cmbTipo">
          <property name="minimumSize">
           <size>
@@ -242,17 +146,26 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="3">
-        <widget class="QLabel" name="lblTipo">
-         <property name="text">
-          <string>Tipo :</string>
+       <item row="2" column="0">
+        <widget class="QLabel" name="lblNombre">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>25</height>
+          </size>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Nombre :</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="2" colspan="2" alignment="Qt::AlignRight">
+       <item row="2" column="2">
         <widget class="QLabel" name="lblMail">
          <property name="minimumSize">
           <size>
@@ -274,34 +187,139 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="lineDni">
+         <property name="minimumSize">
+          <size>
+           <width>90</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>90</width>
+           <height>25</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="lineDireccion">
+         <property name="maximumSize">
+          <size>
+           <width>300</width>
+           <height>25</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="lineNombre">
+         <property name="minimumSize">
+          <size>
+           <width>250</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>250</width>
+           <height>25</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLineEdit" name="lineEmail">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="">
       <property name="geometry">
        <rect>
-        <x>430</x>
-        <y>220</y>
-        <width>239</width>
-        <height>25</height>
+        <x>161</x>
+        <y>158</y>
+        <width>831</width>
+        <height>481</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
+       <item row="1" column="0" colspan="5">
+        <widget class="QTableWidget" name="tabUsuarios">
+         <column>
+          <property name="text">
+           <string>Nombre</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>DNI</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Email</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Mobil</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Tipo</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item row="0" column="1">
         <widget class="QPushButton" name="btnAlta">
+         <property name="maximumSize">
+          <size>
+           <width>120</width>
+           <height>25</height>
+          </size>
+         </property>
          <property name="text">
           <string>Guardar</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="0" column="2">
         <widget class="QPushButton" name="btnModif">
+         <property name="maximumSize">
+          <size>
+           <width>120</width>
+           <height>25</height>
+          </size>
+         </property>
          <property name="text">
           <string>Modificar</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
+       <item row="0" column="3">
         <widget class="QPushButton" name="btnBaja">
+         <property name="maximumSize">
+          <size>
+           <width>120</width>
+           <height>25</height>
+          </size>
+         </property>
          <property name="text">
           <string>Eliminar</string>
          </property>
