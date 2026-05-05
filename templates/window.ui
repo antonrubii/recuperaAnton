@@ -18,19 +18,19 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>70</y>
+      <y>64</y>
       <width>1131</width>
-      <height>641</height>
+      <height>771</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
       <string>Usuarios</string>
      </attribute>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>160</x>
@@ -247,7 +247,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>161</x>
@@ -465,7 +465,7 @@
        <rect>
         <x>164</x>
         <y>116</y>
-        <width>51</width>
+        <width>61</width>
         <height>16</height>
        </rect>
       </property>
@@ -478,22 +478,12 @@
        <rect>
         <x>412</x>
         <y>116</y>
-        <width>33</width>
+        <width>41</width>
         <height>16</height>
        </rect>
       </property>
       <property name="text">
        <string>Estado</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="lineEstado">
-      <property name="geometry">
-       <rect>
-        <x>485</x>
-        <y>115</y>
-        <width>133</width>
-        <height>20</height>
-       </rect>
       </property>
      </widget>
      <widget class="QLabel" name="lblid">
@@ -511,6 +501,142 @@
       <property name="text">
        <string/>
       </property>
+     </widget>
+     <widget class="QPushButton" name="btnAltaTarea">
+      <property name="geometry">
+       <rect>
+        <x>377</x>
+        <y>155</y>
+        <width>120</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>120</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Guardar</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btnBajaTarea">
+      <property name="geometry">
+       <rect>
+        <x>629</x>
+        <y>155</y>
+        <width>120</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>120</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Eliminar</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btnModifTarea">
+      <property name="geometry">
+       <rect>
+        <x>503</x>
+        <y>155</y>
+        <width>120</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>120</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Modificar</string>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="tabTareas">
+      <property name="geometry">
+       <rect>
+        <x>154</x>
+        <y>187</y>
+        <width>811</width>
+        <height>461</height>
+       </rect>
+      </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <column>
+       <property name="text">
+        <string>ID</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Cliente</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Empleado</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Servicio</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Tipo</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Total (€)</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QComboBox" name="cmbEstado">
+      <property name="geometry">
+       <rect>
+        <x>487</x>
+        <y>116</y>
+        <width>131</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>pendiente</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>en curso</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>finalizado</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>facturada</string>
+       </property>
+      </item>
      </widget>
     </widget>
    </widget>

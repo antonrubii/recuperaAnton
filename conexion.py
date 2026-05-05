@@ -80,3 +80,76 @@ class Conexion:
         if query.exec() and query.next():
             return [query.value(i) for i in range(6)]
         return None
+
+    @staticmethod
+    def addTarea(nueva):
+        query = QtSql.QSqlQuery()
+        # Ajusta los nombres de las columnas a como las tengas en tu SQLite
+        query.prepare("""INSERT INTO tareas (idCliente, idEmpleado, servicio, horas, precio, estado) 
+                            VALUES (:idC, :idE, :serv, :h, :p, :est)""")
+        query.bindValue(":idC", nueva[0])
+        query.bindValue(":idE", nueva[1])
+        query.bindValue(":serv", nueva[2])
+        query.bindValue(":h", nueva[3])
+        query.bindValue(":p", nueva[4])
+        query.bindValue(":est", nueva[5])
+        return query.exec()
+
+    @staticmethod
+    def listadoTareas():
+        listado = []
+        query = QtSql.QSqlQuery()
+        query.prepare("SELECT idTarea, idCliente, idEmpleado, servicio, horas, precio FROM tareas")
+        if query.exec():
+            while query.next():
+                listado.append([query.value(i) for i in range(6)])
+        return listado
+
+    @staticmethod
+    def cargarUnaTarea(idTarea):
+        query = QtSql.QSqlQuery()
+        query.prepare("SELECT * FROM tareas WHERE idTarea = :id")
+        query.bindValue(":id", idTarea)
+        if query.exec() and query.next():
+            return [query.value(i) for i in range(6)]
+        return None
+
+    @staticmethod
+    def delTarea(idTarea):
+        query = QtSql.QSqlQuery()
+        query.prepare("DELETE FROM tareas WHERE idTarea = :id")
+        query.bindValue(":id", idTarea)
+        return query.exec()
+
+    @staticmethod
+    def modifTarea(datos):
+        query = QtSql.QSqlQuery()
+        query.prepare("UPDATE tareas SET idCliente=:cli, idEmpleado=:emp, servicio=:serv, "
+                      "horas=:h, precio=:p WHERE idTarea=:id")
+        query.bindValue(":cli", datos[1])
+        query.bindValue(":emp", datos[2])
+        query.bindValue(":serv", datos[3])
+        query.bindValue(":h", datos[4])
+        query.bindValue(":p", datos[5])
+        query.bindValue(":id", datos[0])
+        return query.exec()
+
+    @staticmethod
+    def proximoIdTarea():
+        """Mira en la tabla tareas cuál es el ID más alto y le suma 1"""
+        query = QtSql.QSqlQuery()
+        query.prepare("SELECT MAX(idServicio) FROM tareas")
+        if query.exec() and query.next():
+            res = query.value(0)
+            return (int(res) + 1) if res else 1
+        return 1
+
+    @staticmethod
+    def obtenerIdPorDni(dni):
+        """Busca el idUsuario (numérico) que tiene un DNI concreto"""
+        query = QtSql.QSqlQuery()
+        query.prepare("SELECT idUsuario FROM usuarios WHERE dni = :dni")
+        query.bindValue(":dni", dni)
+        if query.exec() and query.next():
+            return query.value(0)
+        return None

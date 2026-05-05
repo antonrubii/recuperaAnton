@@ -47,6 +47,9 @@ class Main(QtWidgets.QMainWindow):
         # 6. Carga inicial de datos en la tabla
         Usuarios.cargarTabla()
 
+        #Estados de la tarea
+        globals.ui.cmbEstado.addItems(["", "pendiente", "en curso", "finalizada", "facturada"])
+
     # --- MÉTODOS DE VALIDACIÓN VISUAL ---
     def checkDni(self):
         """Llamada a la lógica de validación de DNI en events.py"""
