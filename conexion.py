@@ -153,3 +153,21 @@ class Conexion:
         if query.exec() and query.next():
             return query.value(0)
         return None
+
+    @staticmethod
+    def obtenerIdPorNombre(nombre):
+
+        query = QtSql.QSqlQuery()
+
+        query.prepare("""
+            SELECT idUsuario
+            FROM usuarios
+            WHERE nombre = :nombre
+        """)
+
+        query.bindValue(":nombre", nombre)
+
+        if query.exec() and query.next():
+            return query.value(0)
+
+        return None

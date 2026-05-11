@@ -4,129 +4,336 @@ from conexion import Conexion
 
 
 class Tareas:
+
     @staticmethod
     def cargarTabla():
         try:
-            # Traemos los datos de la base de datos
             listado = Conexion.listadoTareas()
             globals.ui.tabTareas.setRowCount(0)
 
             for index, registro in enumerate(listado):
+
                 globals.ui.tabTareas.insertRow(index)
 
-                # registro[0]=id, [1]=cliente, [2]=empleado, [3]=servicio, [4]=horas, [5]=precio
-                globals.ui.tabTareas.setItem(index, 0, QtWidgets.QTableWidgetItem(str(registro[0])))
-                globals.ui.tabTareas.setItem(index, 1, QtWidgets.QTableWidgetItem(str(registro[1])))
-                globals.ui.tabTareas.setItem(index, 2, QtWidgets.QTableWidgetItem(str(registro[2])))
-                globals.ui.tabTareas.setItem(index, 3, QtWidgets.QTableWidgetItem(str(registro[3])))
+                # COLUMNAS
+                # 0 ID
+                # 1 CLIENTE
+                # 2 EMPLEADO
+                # 3 SERVICIO
+                # 4 HORAS
+                # 5 PRECIO
 
-                # Aquí podemos añadir el ESTADO si lo tienes en la BD,
-                # si no, lo dejamos vacío o ponemos el dato que corresponda.
-                # globals.ui.tabTareas.setItem(index, 4, QtWidgets.QTableWidgetItem("Pendiente"))
+                globals.ui.tabTareas.setItem(
+                    index, 0,
+                    QtWidgets.QTableWidgetItem(str(registro[0]))
+                )
 
-                # Cálculo del TOTAL para la columna 5
+                globals.ui.tabTareas.setItem(
+                    index, 1,
+                    QtWidgets.QTableWidgetItem(str(registro[1]))
+                )
+
+                globals.ui.tabTareas.setItem(
+                    index, 2,
+                    QtWidgets.QTableWidgetItem(str(registro[2]))
+                )
+
+                globals.ui.tabTareas.setItem(
+                    index, 3,
+                    QtWidgets.QTableWidgetItem(str(registro[3]))
+                )
+
                 total = float(registro[4]) * float(registro[5])
-                globals.ui.tabTareas.setItem(index, 5, QtWidgets.QTableWidgetItem(f"{total:.2f} €"))
 
-                # Alineación: ID y números al centro, textos a la izquierda
-                globals.ui.tabTareas.item(index, 0).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-                globals.ui.tabTareas.item(index, 5).setTextAlignment(
-                    QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                globals.ui.tabTareas.setItem(
+                    index, 4,
+                    QtWidgets.QTableWidgetItem(str(registro[4]))
+                )
+
+                globals.ui.tabTareas.setItem(
+                    index, 5,
+                    QtWidgets.QTableWidgetItem(f"{total:.2f} €")
+                )
+
+                # alineación
+                globals.ui.tabTareas.item(
+                    index, 0
+                ).setTextAlignment(
+                    QtCore.Qt.AlignmentFlag.AlignCenter
+                )
+
+                globals.ui.tabTareas.item(
+                    index, 5
+                ).setTextAlignment(
+                    QtCore.Qt.AlignmentFlag.AlignRight |
+                    QtCore.Qt.AlignmentFlag.AlignVCenter
+                )
 
         except Exception as e:
-            print("Error cargando tabla tareas:", e)
+            print("Error cargando tareas:", e)
 
     @staticmethod
     def addTarea():
+
         try:
-            # 1. Recuperamos los IDs reales (no los nombres que se ven)
-            id_cliente = globals.idCliValido
-            id_empleado = globals.idEmpValido
 
-            # 2. Recogemos el resto de datos
-            servicio = globals.ui.lineServicio.text()
-            horas = globals.ui.lineHoras.text()
-            precio = globals.ui.linePrecio_Hora.text()
+            # DATOS FORMULARIO
+            nombreCliente = globals.ui.lineCliente.text().strip()
+            nombreEmpleado = globals.ui.lineEdmpleado.text().strip()
 
-            # 3. Recogemos el texto del COMBOBOX (Lo que pide el profe)
+            cliente = Conexion.obtenerIdPorNombre(nombreCliente)
+            empleado = Conexion.obtenerIdPorNombre(nombreEmpleado)
+            servicio = globals.ui.lineServicio.text().strip()
+            horas = globals.ui.lineHoras.text().strip()
+            precio = globals.ui.linePrecio_Hora.text().strip()
             estado = globals.ui.cmbEstado.currentText()
 
-            # 4. Validaciones básicas
-            if not id_cliente or not id_empleado:
-                QtWidgets.QMessageBox.warning(None, "Error", "Selecciona Cliente y Empleado en la pestaña anterior")
+            # VALIDACIONES
+            if not cliente:
+                QtWidgets.QMessageBox.warning(
+                    None,
+                    "Error",
+                    "Cliente obligatorio"
+                )
+                return
+
+            if not empleado:
+                QtWidgets.QMessageBox.warning(
+                    None,
+                    "Error",
+                    "Empleado obligatorio"
+                )
+                return
+
+            if not servicio:
+                QtWidgets.QMessageBox.warning(
+                    None,
+                    "Error",
+                    "Servicio obligatorio"
+                )
                 return
 
             if estado == "":
-                QtWidgets.QMessageBox.warning(None, "Error", "Debes seleccionar un estado para la tarea")
+                QtWidgets.QMessageBox.warning(
+                    None,
+                    "Error",
+                    "Selecciona un estado"
+                )
                 return
 
-            # 5. Guardar en la BD
-            # Pasamos: [idCli, idEmp, servicio, horas, precio, estado]
-            datos = [id_cliente, id_empleado, servicio, horas, precio, estado]
+            # VALIDAR HORAS
+            try:
+                horas_float = float(horas)
 
+                if horas_float <= 0:
+                    raise ValueError
+
+            except:
+                QtWidgets.QMessageBox.warning(
+                    None,
+                    "Error",
+                    "Horas incorrectas"
+                )
+                return
+
+            # VALIDAR PRECIO
+            try:
+                precio_float = float(precio)
+
+                if precio_float < 0:
+                    raise ValueError
+
+            except:
+                QtWidgets.QMessageBox.warning(
+                    None,
+                    "Error",
+                    "Precio incorrecto"
+                )
+                return
+
+            # DATOS A INSERTAR
+            datos = [
+                cliente,
+                empleado,
+                servicio,
+                horas_float,
+                precio_float,
+                estado
+            ]
+
+            # INSERT BD
             if Conexion.addTarea(datos):
-                QtWidgets.QMessageBox.information(None, "Éxito", "Tarea guardada correctamente")
+
+                QtWidgets.QMessageBox.information(
+                    None,
+                    "OK",
+                    "Tarea guardada correctamente"
+                )
+
                 Tareas.cargarTabla()
-                # Limpiar tras guardar
-                globals.ui.lineServicio.setText("")
-                globals.ui.lineHoras.setText("")
-                globals.ui.linePrecio_Hora.setText("")
-                globals.ui.cmbEstado.setCurrentIndex(0)
+                Tareas.limpiarFormulario()
+
             else:
-                print("Error al insertar en la base de datos")
+
+                QtWidgets.QMessageBox.warning(
+                    None,
+                    "Error",
+                    "No se pudo guardar la tarea"
+                )
 
         except Exception as e:
-            print("Error en addTarea:", e)
+            print("Error addTarea:", e)
+
     @staticmethod
     def selecTarea():
-        """MÉT0DO: selecTarea (según PDF)"""
+
         try:
-            row = globals.ui.tabTareas.currentRow()
-            idTarea = globals.ui.tabTareas.item(row, 0).text()
+
+            fila = globals.ui.tabTareas.currentRow()
+
+            if fila < 0:
+                return
+
+            idTarea = globals.ui.tabTareas.item(fila, 0).text()
+
             registro = Conexion.cargarUnaTarea(idTarea)
+
             if registro:
-                globals.ui.lblid.setText(str(registro[0]))  # El label que creaste para el ID
-                globals.ui.lineCliente.setText(str(registro[1]))
-                globals.ui.lineEdmpleado.setText(str(registro[2]))
-                globals.ui.lineServicio.setText(str(registro[3]))
-                globals.ui.lineHoras.setText(str(registro[4]))
-                globals.ui.linePrecio_Hora.setText(str(registro[5]))
+
+                globals.ui.lblid.setText(str(registro[0]))
+
+                globals.ui.lineCliente.setText(
+                    str(registro[1])
+                )
+
+                globals.ui.lineEdmpleado.setText(
+                    str(registro[2])
+                )
+
+                globals.ui.lineServicio.setText(
+                    str(registro[3])
+                )
+
+                globals.ui.lineHoras.setText(
+                    str(registro[4])
+                )
+
+                globals.ui.linePrecio_Hora.setText(
+                    str(registro[5])
+                )
+
         except Exception as e:
-            print("Error seleccionando tarea", e)
+            print("Error seleccionando tarea:", e)
 
     @staticmethod
     def delTarea():
-        idTarea = globals.ui.lblid.text()
-        if idTarea and Conexion.delTarea(idTarea):
-            QtWidgets.QMessageBox.information(None, "Ok", "Tarea eliminada")
-            Tareas.cargarTabla()
+
+        try:
+
+            idTarea = globals.ui.lblid.text()
+
+            if not idTarea:
+                QtWidgets.QMessageBox.warning(
+                    None,
+                    "Error",
+                    "Selecciona una tarea"
+                )
+                return
+
+            respuesta = QtWidgets.QMessageBox.question(
+                None,
+                "Confirmar",
+                "¿Eliminar tarea?"
+            )
+
+            if respuesta == QtWidgets.QMessageBox.StandardButton.Yes:
+
+                if Conexion.delTarea(idTarea):
+
+                    QtWidgets.QMessageBox.information(
+                        None,
+                        "OK",
+                        "Tarea eliminada"
+                    )
+
+                    Tareas.cargarTabla()
+                    Tareas.limpiarFormulario()
+
+        except Exception as e:
+            print("Error eliminando tarea:", e)
 
     @staticmethod
     def modifTarea():
-        idTarea = globals.ui.lblid.text()
-        datos = [
-            idTarea,
-            globals.ui.lineCliente.text(),
-            globals.ui.lineEdmpleado.text(),
-            globals.ui.lineServicio.text(),
-            globals.ui.lineHoras.text(),
-            globals.ui.linePrecio_Hora.text()
-        ]
-        if Conexion.modifTarea(datos):
-            QtWidgets.QMessageBox.information(None, "Ok", "Tarea modificada")
-            Tareas.cargarTabla()
+
+        try:
+
+            idTarea = globals.ui.lblid.text()
+
+            if not idTarea:
+                QtWidgets.QMessageBox.warning(
+                    None,
+                    "Error",
+                    "Selecciona una tarea"
+                )
+                return
+
+            cliente = globals.ui.lineCliente.text().strip()
+            empleado = globals.ui.lineEdmpleado.text().strip()
+            servicio = globals.ui.lineServicio.text().strip()
+            horas = globals.ui.lineHoras.text().strip()
+            precio = globals.ui.linePrecio_Hora.text().strip()
+
+            datos = [
+                idTarea,
+                cliente,
+                empleado,
+                servicio,
+                horas,
+                precio
+            ]
+
+            if Conexion.modifTarea(datos):
+
+                QtWidgets.QMessageBox.information(
+                    None,
+                    "OK",
+                    "Tarea modificada"
+                )
+
+                Tareas.cargarTabla()
+
+        except Exception as e:
+            print("Error modificando tarea:", e)
 
     @staticmethod
-    def validarCampos():
-        # Validaciones de tipos numéricos
-        try:
-            float(globals.ui.lineHoras.text())
-            float(globals.ui.linePrecio_Hora.text())
-        except:
-            QtWidgets.QMessageBox.warning(None, "Error", "Horas y Precio deben ser números")
-            return False
+    def limpiarFormulario():
 
-        if not globals.ui.lineCliente.text() or not globals.ui.lineEdmpleado.text():
-            QtWidgets.QMessageBox.warning(None, "Error", "Cliente y Empleado son obligatorios")
-            return False
-        return True
+        globals.ui.lblid.setText("")
+
+        globals.ui.lineCliente.setText("")
+        globals.ui.lineEdmpleado.setText("")
+        globals.ui.lineServicio.setText("")
+        globals.ui.lineHoras.setText("")
+        globals.ui.linePrecio_Hora.setText("")
+
+        globals.ui.cmbEstado.setCurrentIndex(0)
+
+    @staticmethod
+    def cargarCliente():
+
+        fila = globals.ui.tabUsuarios.currentRow()
+
+        if fila >= 0:
+            nombre = globals.ui.tabUsuarios.item(fila, 0).text()
+
+            globals.ui.lineCliente.setText(nombre)
+
+    @staticmethod
+    def cargarEmpleado():
+
+        fila = globals.ui.tabUsuarios.currentRow()
+
+        if fila >= 0:
+            nombre = globals.ui.tabUsuarios.item(fila, 0).text()
+
+            globals.ui.lineEdmpleado.setText(nombre)

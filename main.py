@@ -7,7 +7,7 @@ from events import Events
 from usuarios import Usuarios
 from conexion import Conexion
 from reports import Reports
-
+from tareas import Tareas
 
 class Main(QtWidgets.QMainWindow):
     def __init__(self):
@@ -37,8 +37,14 @@ class Main(QtWidgets.QMainWindow):
         globals.ui.btnModif.clicked.connect(Usuarios.modifUsuario)
         globals.ui.btnBaja.clicked.connect(Usuarios.delUsuario)
 
+        #Conexiones de Botenes CRUD (Pestaña Tareas)
+        globals.ui.btnAltaTarea.clicked.connect(Tareas.addTarea)
+        globals.ui.btnModifTarea.clicked.connect(Tareas.modifTarea)
+        globals.ui.btnBajaTarea.clicked.connect(Tareas.delTarea)
+
         # 5. Eventos de Tabla y Validaciones
         globals.ui.tabUsuarios.clicked.connect(Usuarios.cargarUsuario)
+        globals.ui.tabTareas.clicked.connect(Tareas.selecTarea)
 
         # Validaciones visuales (cambian el color al terminar de escribir)
         globals.ui.lineDni.editingFinished.connect(self.checkDni)
@@ -46,6 +52,7 @@ class Main(QtWidgets.QMainWindow):
 
         # 6. Carga inicial de datos en la tabla
         Usuarios.cargarTabla()
+        Tareas.cargarTabla()
 
         #Estados de la tarea
         globals.ui.cmbEstado.addItems(["", "pendiente", "en curso", "finalizada", "facturada"])
