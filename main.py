@@ -28,9 +28,12 @@ class Main(QtWidgets.QMainWindow):
         globals.ui.actionSalir.triggered.connect(Events.salir)
 
         # Conexión del Informe PDF (Entrega 3)
-        # Asegúrate de haber compilado el .ui para que 'actionListado_empleados' exista
+
         if hasattr(globals.ui, 'actionListado_empleados'):
             globals.ui.actionListado_empleados.triggered.connect(self.report.reportUsuarios)
+        if hasattr(globals.ui, 'actionListado_tareas'):
+            globals.ui.actionListado_tareas.triggered.connect(self.report.reportTareas)
+
 
         # 4. Conexión de Botones CRUD (Pestaña Usuarios)
         globals.ui.btnAlta.clicked.connect(Usuarios.addUsuario)
@@ -41,6 +44,9 @@ class Main(QtWidgets.QMainWindow):
         globals.ui.btnAltaTarea.clicked.connect(Tareas.addTarea)
         globals.ui.btnModifTarea.clicked.connect(Tareas.modifTarea)
         globals.ui.btnBajaTarea.clicked.connect(Tareas.delTarea)
+
+        globals.ui.btnCliente.clicked.connect(Tareas.cargarCliente)
+        globals.ui.btnEmpleado.clicked.connect(Tareas.cargarEmpleado)
 
         # 5. Eventos de Tabla y Validaciones
         globals.ui.tabUsuarios.clicked.connect(Usuarios.cargarUsuario)

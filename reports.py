@@ -1,7 +1,14 @@
 import os
-import datetime
 from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate
+from reportlab.platypus import Table
+from reportlab.platypus import Spacer
+from reportlab.platypus import Paragraph
+from reportlab.lib import colors
+from reportlab.lib import styles
+from datetime import datetime
 from conexion import Conexion
+
 
 
 class Reports:  # <--- ASEGÚRATE DE QUE SE LLAME ASÍ EXACTAMENTE
@@ -15,7 +22,7 @@ class Reports:  # <--- ASEGÚRATE DE QUE SE LLAME ASÍ EXACTAMENTE
         """Genera el informe PDF de usuarios ordenados por nombre"""
         try:
             # 1. Configuración del nombre del archivo
-            fecha_hoy = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            fecha_hoy = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             nombre_pdf = f"informe_usuarios_{fecha_hoy}.pdf"
             path = os.path.join(self.rootPath, nombre_pdf)
 
@@ -27,7 +34,7 @@ class Reports:  # <--- ASEGÚRATE DE QUE SE LLAME ASÍ EXACTAMENTE
             c.drawCentredString(300, 780, "LISTADO DE EMPLEADOS")
 
             c.setFont("Helvetica", 10)
-            fecha_impresion = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+            fecha_impresion = datetime.now().strftime("%d/%m/%Y %H:%M")
             c.drawString(50, 750, f"Fecha de Impresión: {fecha_impresion}")
             c.line(50, 740, 550, 740)
 
@@ -62,3 +69,161 @@ class Reports:  # <--- ASEGÚRATE DE QUE SE LLAME ASÍ EXACTAMENTE
 
         except Exception as e:
             print("Error generando el PDF:", e)
+
+    def reportTareas(self):
+
+        try:
+
+            datos = Conexion.listadoTareasPDF()
+
+            # nombre con fecha
+            fecha_hoy = datetime.now().strftime(
+                "%Y_%m_%d_%H_%M_%S"
+            )
+
+            nombre_pdf = (
+                f"informe_tareas_{fecha_hoy}.pdf"
+            )
+
+            path = os.path.join(
+                self.rootPath,
+                nombre_pdf
+            )
+
+            pdf = SimpleDocTemplate(path)
+
+            elementos = []
+
+            estilos = styles.getSampleStyleSheet()
+
+            titulo = Paragraph(
+                "LISTADO DE TAREAS",
+                estilos['Title']
+            )
+
+            fecha = Paragraph(
+
+                "Fecha de Impresión: " +
+
+                datetime.now().strftime(
+                    "%d/%m/%Y %H:%M"
+                ),
+
+                estilos['Normal']
+            )
+
+            elementos.append(
+                titulo
+            )
+
+            elementos.append(
+                Spacer(1, 20)
+            )
+
+            elementos.append(
+                fecha
+            )
+
+            elementos.append(
+                Spacer(1, 20)
+            )
+
+            tabla = []
+
+            cabecera = [
+
+                "ID",
+                "Cliente",
+                "Empleado",
+                "Servicio",
+                "Horas",
+                "Precio",
+                "Estado",
+                "Total"
+
+            ]
+
+            tabla.append(
+                cabecera
+            )
+
+            for t in datos:
+                total = (
+                        float(t[4]) *
+                        float(t[5])
+                )
+
+                fila = [
+
+                    str(t[0]),
+                    str(t[1]),
+                    str(t[2]),
+                    str(t[3]),
+                    str(t[4]),
+                    str(t[5]),
+                    str(t[6]),
+                    f"{total:.2f} €"
+
+                ]
+
+                tabla.append(
+                    fila
+                )
+
+            tablaPDF = Table(tabla)
+
+            tablaPDF.setStyle([
+
+                ('BACKGROUND',
+                 (0, 0),
+                 (-1, 0),
+                 colors.lightgrey),
+
+                ('TEXTCOLOR',
+                 (0, 0),
+                 (-1, 0),
+                 colors.black),
+
+                ('GRID',
+                 (0, 0),
+                 (-1, -1),
+                 1,
+                 colors.black),
+
+                ('ALIGN',
+                 (0, 0),
+                 (-1, -1),
+                 'CENTER'),
+
+                ('FONTNAME',
+                 (0, 0),
+                 (-1, 0),
+                 'Helvetica-Bold'),
+
+                ('BOTTOMPADDING',
+                 (0, 0),
+                 (-1, 0),
+                 12)
+
+            ])
+
+            elementos.append(
+                tablaPDF
+            )
+
+            pdf.build(
+                elementos
+            )
+
+            os.startfile(path)
+
+            print(
+                "PDF tareas generado"
+            )
+
+        except Exception as e:
+
+            print(
+                "Error PDF:",
+                e
+            )

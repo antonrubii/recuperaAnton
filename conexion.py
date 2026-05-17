@@ -39,6 +39,8 @@ class Conexion:
                 listado.append(row)
         return listado
 
+
+
     @staticmethod
     def listadoUsuariosPDF():
         """Obtiene los usuarios ordenados por nombre para el informe PDF"""
@@ -51,6 +53,47 @@ class Conexion:
             while query.next():
                 row = [query.value(i) for i in range(4)]
                 listado.append(row)
+        return listado
+
+    @staticmethod
+    def listadoTareasPDF():
+
+        listado = []
+
+        query = QtSql.QSqlQuery()
+
+        query.prepare("""
+
+            SELECT
+            idTarea,
+            idCliente,
+            idEmpleado,
+            servicio,
+            horas,
+            precio,
+            estado
+
+            FROM tareas
+
+            ORDER BY idTarea
+
+        """)
+
+        if query.exec():
+
+            while query.next():
+                fila = [
+                    query.value(0),
+                    query.value(1),
+                    query.value(2),
+                    query.value(3),
+                    query.value(4),
+                    query.value(5),
+                    query.value(6)
+                ]
+
+                listado.append(fila)
+
         return listado
 
     @staticmethod
@@ -83,17 +126,31 @@ class Conexion:
 
     @staticmethod
     def addTarea(nueva):
+
         query = QtSql.QSqlQuery()
-        # Ajusta los nombres de las columnas a como las tengas en tu SQLite
-        query.prepare("""INSERT INTO tareas (idCliente, idEmpleado, servicio, horas, precio, estado) 
-                            VALUES (:idC, :idE, :serv, :h, :p, :est)""")
+
+        query.prepare("""
+            INSERT INTO tareas
+            (idCliente,idEmpleado,servicio,horas,precio,estado)
+
+            VALUES
+            (:idC,:idE,:serv,:h,:p,:est)
+        """)
+
         query.bindValue(":idC", nueva[0])
         query.bindValue(":idE", nueva[1])
         query.bindValue(":serv", nueva[2])
         query.bindValue(":h", nueva[3])
         query.bindValue(":p", nueva[4])
         query.bindValue(":est", nueva[5])
-        return query.exec()
+
+
+        ok = query.exec()
+
+        if not ok:
+            print(query.lastError().text())
+
+        return ok
 
     @staticmethod
     def listadoTareas():
@@ -160,7 +217,7 @@ class Conexion:
         query = QtSql.QSqlQuery()
 
         query.prepare("""
-            SELECT idUsuario
+            SELECT idUusario
             FROM usuarios
             WHERE nombre = :nombre
         """)
@@ -171,3 +228,4 @@ class Conexion:
             return query.value(0)
 
         return None
+

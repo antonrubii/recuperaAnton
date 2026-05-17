@@ -638,6 +638,44 @@
        </property>
       </item>
      </widget>
+     <widget class="QPushButton" name="btnCliente">
+      <property name="geometry">
+       <rect>
+        <x>720</x>
+        <y>80</y>
+        <width>120</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>120</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Cliente</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btnEmpleado">
+      <property name="geometry">
+       <rect>
+        <x>720</x>
+        <y>120</y>
+        <width>120</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>120</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Empleado</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -667,6 +705,7 @@
      <string>Informes</string>
     </property>
     <addaction name="actionListado_empleados"/>
+    <addaction name="actionListado_tareas"/>
    </widget>
    <addaction name="menuArchivo"/>
    <addaction name="menuAcerca_de"/>
@@ -680,6 +719,11 @@
   <action name="actionListado_empleados">
    <property name="text">
     <string>Listado Empleados</string>
+   </property>
+  </action>
+  <action name="actionListado_tareas">
+   <property name="text">
+    <string>Listado Tareas</string>
    </property>
   </action>
  </widget>

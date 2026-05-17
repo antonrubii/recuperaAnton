@@ -83,6 +83,11 @@ class Tareas:
 
             cliente = Conexion.obtenerIdPorNombre(nombreCliente)
             empleado = Conexion.obtenerIdPorNombre(nombreEmpleado)
+            print("CLIENTE TEXTO:", nombreCliente)
+            print("CLIENTE ID:", cliente)
+
+            print("EMPLEADO TEXTO:", nombreEmpleado)
+            print("EMPLEADO ID:", empleado)
             servicio = globals.ui.lineServicio.text().strip()
             horas = globals.ui.lineHoras.text().strip()
             precio = globals.ui.linePrecio_Hora.text().strip()
