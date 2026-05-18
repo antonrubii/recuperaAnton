@@ -45,8 +45,7 @@ class Main(QtWidgets.QMainWindow):
         globals.ui.btnModifTarea.clicked.connect(Tareas.modifTarea)
         globals.ui.btnBajaTarea.clicked.connect(Tareas.delTarea)
 
-        globals.ui.btnCliente.clicked.connect(Tareas.cargarCliente)
-        globals.ui.btnEmpleado.clicked.connect(Tareas.cargarEmpleado)
+
 
         # 5. Eventos de Tabla y Validaciones
         globals.ui.tabUsuarios.clicked.connect(Usuarios.cargarUsuario)
