@@ -1,11 +1,23 @@
+"""
+Módulo de Gestión de Usuarios.
+
+Maneja el comportamiento y eventos de la pestaña de administración de usuarios.
+Se encarga de procesar las altas, modificaciones, bajas y cargas de registros personales.
+"""
 import globals
 from PyQt6 import QtWidgets, QtCore
 from conexion import Conexion
 
 
 class Usuarios:
+    """
+        Clase encargada de coordinar las interacciones CRUD aplicadas al personal o clientes.
+        """
     @staticmethod
     def limpiarCampos():
+        """
+                Limpia las cajas de entrada de texto del panel de usuarios a su estado original.
+                """
         globals.ui.lineDni.setText("")
         globals.ui.lineNombre.setText("")
         globals.ui.lineDireccion.setText("")
@@ -16,7 +28,11 @@ class Usuarios:
 
     @staticmethod
     def cargarTabla(tipo="Todos"):
-        """Renderizado dinámico de la tabla"""
+
+        """
+        Repopula la cuadrícula visual de usuarios ('tabUsuarios') solicitando el listado
+        actualizado a la capa de datos.
+        """
         try:
             listado = Conexion.listadoUsuarios(tipo)
             globals.ui.tabUsuarios.setRowCount(0)
@@ -29,6 +45,10 @@ class Usuarios:
 
     @staticmethod
     def addUsuario():
+        """
+                Recoge las variables personales del formulario de usuarios, realiza el alta en
+                base de datos y actualiza los componentes visuales pertinentes.
+                """
         if not Usuarios.validarCampos(): return
 
         datos = [
@@ -51,6 +71,10 @@ class Usuarios:
 
     @staticmethod
     def cargarUsuario():
+        """
+                Se ejecuta al pinchar una fila en 'tabUsuarios'. Obtiene el DNI seleccionado,
+                busca el registro completo y rellena los lineEdits del formulario de Usuarios.
+                """
         try:
             # 1. Obtenemos la fila seleccionada en la tabla
             row = globals.ui.tabUsuarios.currentRow()
@@ -101,6 +125,9 @@ class Usuarios:
             print("Error en cargarUsuario:", e)
     @staticmethod
     def delUsuario():
+        """
+                Elimina el usuario activo basándose en el DNI presente en el formulario de la ventana.
+                """
         dni = globals.ui.lineDni.text()
         if not dni: return
         if Conexion.delUsuario(dni):
@@ -110,6 +137,10 @@ class Usuarios:
 
     @staticmethod
     def modifUsuario():
+        """
+                Envía los valores modificados del formulario a la base de datos basándose en el
+                DNI y refresca el grid.
+                """
         datos = [
             globals.ui.lineDni.text(),
             globals.ui.lineNombre.text(),

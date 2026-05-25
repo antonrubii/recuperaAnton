@@ -1,12 +1,27 @@
+"""
+Módulo de Gestión de Tareas.
+
+Controla el comportamiento visual de la pestaña Tareas, procesando la
+recogida de datos desde el formulario de la interfaz y la sincronización con la tabla.
+"""
+
 import globals
 from PyQt6 import QtWidgets, QtCore
 from conexion import Conexion
 
 
 class Tareas:
+    """
+        Clase contenedora de la lógica operativa (CRUD) de las Tareas de la aplicación.
+        """
 
     @staticmethod
     def cargarTabla():
+
+        """
+                Limpia la tabla gráfica 'tabTareas' y añade las filas correspondientes
+                con los datos vigentes extraídos desde la base de datos.
+                """
         try:
             listado = Conexion.listadoTareas()
             globals.ui.tabTareas.setRowCount(0)
@@ -74,7 +89,10 @@ class Tareas:
 
     @staticmethod
     def addTarea():
-
+        """
+                Captura la información de los campos de texto e inserta la nueva tarea en la BD.
+                Vuelve a refrescar la tabla al finalizar.
+                """
         try:
 
             # DATOS FORMULARIO
@@ -191,6 +209,10 @@ class Tareas:
 
     @staticmethod
     def selecTarea():
+        """
+                Evento disparado al hacer clic en una fila de la tabla de tareas.
+                Extrae la información de las celdas de dicha fila y la proyecta en los inputs de arriba.
+                """
 
         try:
 
@@ -232,6 +254,9 @@ class Tareas:
 
     @staticmethod
     def delTarea():
+        """
+                Elimina la tarea apuntada por el label identificador y limpia el formulario visual.
+                """
 
         try:
 
@@ -269,6 +294,10 @@ class Tareas:
 
     @staticmethod
     def modifTarea():
+        """
+                Lee el ID activo del label y actualiza la tarea correspondiente en la BD
+                con los nuevos valores introducidos en el formulario.
+                """
 
         try:
 
@@ -312,6 +341,9 @@ class Tareas:
 
     @staticmethod
     def limpiarFormulario():
+        """
+                Restablece todos los inputs y el combobox de la pestaña tareas dejándolos vacíos.
+                """
 
         globals.ui.lblid.setText("")
 
@@ -325,6 +357,9 @@ class Tareas:
 
     @staticmethod
     def cargarCliente():
+        """
+                       Carga el Cliente seleccionado en la tabla
+                       """
 
         fila = globals.ui.tabUsuarios.currentRow()
 
@@ -335,6 +370,9 @@ class Tareas:
 
     @staticmethod
     def cargarEmpleado():
+        """
+                      Carga el Empleado seleccionado en la tabla
+                       """
 
         fila = globals.ui.tabUsuarios.currentRow()
 

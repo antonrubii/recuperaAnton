@@ -1,3 +1,9 @@
+"""
+Módulo Principal de Lanzamiento.
+
+Inicia el bucle de la aplicación QApplication, inicializa los estilos gráficos QSS,
+conecta la base de datos local y enlaza los disparadores de eventos e interfaces gráficas.
+"""
 import sys
 import os
 import globals
@@ -10,7 +16,15 @@ from reports import Reports
 from tareas import Tareas
 
 class Main(QtWidgets.QMainWindow):
+    """
+        Ventana principal del sistema que hereda de QMainWindow.
+        Centraliza el enlazado de slots de botones y cargas iniciales en el arranque.
+        """
     def __init__(self):
+        """
+                Inicializa la ventana del programa, establece configuraciones previas de la BD
+                y conecta todos los listeners del entorno PyQt6.
+                """
         super(Main, self).__init__()
         # Inicializamos la interfaz en la variable global
         globals.ui = Ui_MainWindow()
@@ -65,6 +79,10 @@ class Main(QtWidgets.QMainWindow):
 
     # --- MÉTODOS DE VALIDACIÓN VISUAL ---
     def checkDni(self):
+        """
+                Dispara el validador estático de DNI y aplica una respuesta visual
+                estilizando el fondo de la caja de texto (Verde si pasa, Rojo si falla).
+                """
         """Llamada a la lógica de validación de DNI en events.py"""
         dni = globals.ui.lineDni.text()
         if Events.validarDNI(dni):
@@ -75,7 +93,10 @@ class Main(QtWidgets.QMainWindow):
             globals.ui.lineDni.setPlaceholderText("DNI INVÁLIDO")
 
     def checkMovil(self):
-        """Llamada a la lógica de validación de Móvil en events.py"""
+        """
+                Dispara el validador estático de teléfonos móviles modificando visualmente
+                el control lineEdit del número de contacto de manera análoga.
+                """
         movil = globals.ui.lineMovil.text()
         if Events.validarMovil(movil):
             globals.ui.lineMovil.setStyleSheet("background-color: #C8E6C9;")

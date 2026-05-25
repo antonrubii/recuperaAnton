@@ -1,3 +1,9 @@
+"""
+Módulo de Generación de Informes PDF (Reports).
+
+Permitir recopilar datos de la persistencia SQL y formatearlos dinámicamente
+en un archivo PDF legible usando la librería ReportLab.
+"""
 import os
 from reportlab.pdfgen import canvas
 from reportlab.platypus import SimpleDocTemplate
@@ -11,7 +17,10 @@ from conexion import Conexion
 
 
 
-class Reports:  # <--- ASEGÚRATE DE QUE SE LLAME ASÍ EXACTAMENTE
+class Reports:
+    """
+        Clase estructurada para la maquetación y escritura de documentos analíticos imprimibles.
+        """
     def __init__(self):
         # Crear carpeta de informes si no existe
         self.rootPath = "reports"
@@ -71,6 +80,7 @@ class Reports:  # <--- ASEGÚRATE DE QUE SE LLAME ASÍ EXACTAMENTE
             print("Error generando el PDF:", e)
 
     def reportTareas(self):
+        """Genera el informe PDF de tareas """
 
         try:
 

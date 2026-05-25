@@ -1,14 +1,29 @@
+"""
+Módulo de Eventos y Funciones Auxiliares Generales.
+
+Proporciona utilidades globales como validación sintáctica de datos de entrada
+(DNI, Teléfono) y el control de salida segura de la aplicación.
+"""
 import sys
 import re
 from PyQt6 import QtWidgets
 
 class Events:
+    """
+        Clase contenedora de validaciones algorítmicas y flujos genéricos del sistema.
+        """
     @staticmethod
     def salir(event):
+        """
+                Finaliza de manera ordenada y segura la ejecución de la aplicación.
+                """
         sys.exit()
 
     @staticmethod
     def acerca_de():
+        """
+                       Muestra los nombre del proyecto ,  version, fecha y datos dew quien creó el programa
+                        """
         QtWidgets.QMessageBox.information(None, "Acerca de",
             "Proyecto: recuperaRubinanRoddriguezAnton\n"
             "Autor: Antón Rubiñán\n"
@@ -17,7 +32,11 @@ class Events:
 
     @staticmethod
     def validarDNI(dni):
-        """ Algoritmo de validación de NIF (8 números + letra) """
+        """
+                Verifica matemáticamente la validez de un DNI español.
+        Format regular de 8 números junto a una letra, calculando si la letra coincide.
+        """
+
         try:
             tabla = "TRWAGMYFPDXBNJZSQVHLCKE"
             dni = dni.upper()
@@ -33,10 +52,14 @@ class Events:
 
     @staticmethod
     def validarMovil(telefono):
-        """ Valida que tenga 9 dígitos y empiece por 6 o 7 """
+        """
+        Valida mediante expresiones regulares si una cadena de texto sigue el patrón
+        de un teléfono móvil estándar español.
+        """
         return bool(re.match(r"^[67]\d{8}$", telefono))
 
     def resizeTabCustomer(self):
+
         try:
             # Esto quita las líneas feas de la tabla y la hace parecer una lista web
             globals.ui.tabUsuarios.setShowGrid(False)  # <--- CRÍTICO
