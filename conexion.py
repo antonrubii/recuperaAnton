@@ -185,6 +185,27 @@ class Conexion:
         return listado
 
     @staticmethod
+    def listadoTareasPDF():
+        """
+        Obtiene todas las tareas guardadas de la base de datos optimizadas
+        con las columnas necesarias para la creación del informe en PDF.
+
+        Returns:
+            list: Lista de tuplas/listas con formato [idTarea, idCliente, idEmpleado, servicio, total].
+        """
+        listado = []
+        query = QtSql.QSqlQuery()
+        # Seleccionamos las columnas clave que quieres pintar en el documento final
+        query.prepare("SELECT idTarea, idCliente, idEmpleado, servicio, precio FROM tareas ORDER BY idTarea ASC")
+
+        if query.exec():
+            while query.next():
+                # Extraemos los 5 campos resultantes de la consulta
+                row = [query.value(i) for i in range(7)]
+                listado.append(row)
+        return listado
+
+    @staticmethod
     def cargarUnaTarea(idTarea):
         """
         Obtiene los datos completos de una tarea específica localizándola por su clave numérica.
