@@ -73,8 +73,6 @@ class Main(QtWidgets.QMainWindow):
         Usuarios.cargarTabla()
         Tareas.cargarTabla()
 
-        #Estados de la tarea
-        globals.ui.cmbEstado.addItems(["", "pendiente", "en curso", "finalizada", "facturada"])
 
     # --- MÉTODOS DE VALIDACIÓN VISUAL ---
     def checkDni(self):

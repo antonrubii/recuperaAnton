@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -390,11 +390,16 @@
       </column>
       <column>
        <property name="text">
+        <string>Estado</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
         <string>Total (€)</string>
        </property>
       </column>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>430</x>
@@ -445,7 +450,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>163</x>

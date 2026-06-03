@@ -17,69 +17,63 @@ class Tareas:
 
     @staticmethod
     def cargarTabla():
-
         """
-                Limpia la tabla gráfica 'tabTareas' y añade las filas correspondientes
-                con los datos vigentes extraídos desde la base de datos.
-                """
+        Limpia la tabla gráfica 'tabTareas' y añade las filas correspondientes
+        con los datos vigentes extraídos desde la base de datos.
+        """
         try:
+            from PyQt6 import QtGui, QtCore, QtWidgets
+
             listado = Conexion.listadoTareas()
             globals.ui.tabTareas.setRowCount(0)
 
             for index, registro in enumerate(listado):
-
                 globals.ui.tabTareas.insertRow(index)
 
-                # COLUMNAS
-                # 0 ID
-                # 1 CLIENTE
-                # 2 EMPLEADO
-                # 3 SERVICIO
-                # 4 HORAS
-                # 5 PRECIO
+                # 🔍 Capturamos el estado de forma segura (posición 6 de la base de datos)
+                estado_texto = str(registro[6]).strip() if len(registro) > 6 and registro[
+                    6] is not None else "pendiente"
+                estado_lower = estado_texto.lower()
 
-                globals.ui.tabTareas.setItem(
-                    index, 0,
-                    QtWidgets.QTableWidgetItem(str(registro[0]))
-                )
+                # Creamos los ítems uno a uno utilizando variables
+                item_id = QtWidgets.QTableWidgetItem(str(registro[0]))
+                item_cliente = QtWidgets.QTableWidgetItem(str(registro[1]))
+                item_empleado = QtWidgets.QTableWidgetItem(str(registro[2]))
+                item_servicio = QtWidgets.QTableWidgetItem(str(registro[3]))
 
-                globals.ui.tabTareas.setItem(
-                    index, 1,
-                    QtWidgets.QTableWidgetItem(str(registro[1]))
-                )
+                # Horas
+                item_horas = QtWidgets.QTableWidgetItem(str(registro[4]))
 
-                globals.ui.tabTareas.setItem(
-                    index, 2,
-                    QtWidgets.QTableWidgetItem(str(registro[2]))
-                )
+                # NUEVA COLUMNA VISUAL: Estado
+                item_estado = QtWidgets.QTableWidgetItem(estado_texto)
 
-                globals.ui.tabTareas.setItem(
-                    index, 3,
-                    QtWidgets.QTableWidgetItem(str(registro[3]))
-                )
-
+                # Total calculado (Precio * Horas)
                 total = float(registro[4]) * float(registro[5])
+                item_total = QtWidgets.QTableWidgetItem(f"{total:.2f} €")
 
-                globals.ui.tabTareas.setItem(
-                    index, 4,
-                    QtWidgets.QTableWidgetItem(str(registro[4]))
-                )
+                # Metemos todos los ítems de esta fila en una lista para aplicarles el color de golpe
+                items_fila = [item_id, item_cliente, item_empleado, item_servicio, item_horas, item_estado, item_total]
 
-                globals.ui.tabTareas.setItem(
-                    index, 5,
-                    QtWidgets.QTableWidgetItem(f"{total:.2f} €")
-                )
+                # 🔥 SI ESTÁ PENDIENTE, TODA LA FILA SE PONE EN ROJO PASTEL
+                if estado_lower == "pendiente":
+                    for item in items_fila:
+                        item.setBackground(QtGui.QColor(255, 204, 204))  # Fondo rojo suave
+                        item.setForeground(QtGui.QColor("black"))  # Letra negra clara
 
-                # alineación
-                globals.ui.tabTareas.item(
-                    index, 0
-                ).setTextAlignment(
-                    QtCore.Qt.AlignmentFlag.AlignCenter
-                )
+                # Asignamos los ítems a sus respectivas columnas (0 a 6)
+                globals.ui.tabTareas.setItem(index, 0, item_id)
+                globals.ui.tabTareas.setItem(index, 1, item_cliente)
+                globals.ui.tabTareas.setItem(index, 2, item_empleado)
+                globals.ui.tabTareas.setItem(index, 3, item_servicio)
+                globals.ui.tabTareas.setItem(index, 4, item_horas)
+                globals.ui.tabTareas.setItem(index, 5, item_estado)  # Columna 5: Estado
+                globals.ui.tabTareas.setItem(index, 6, item_total)  # Columna 6: Total (€)
 
-                globals.ui.tabTareas.item(
-                    index, 5
-                ).setTextAlignment(
+                # Alineaciones (usando tus variables de forma segura)
+                item_id.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                item_horas.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                item_estado.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                item_total.setTextAlignment(
                     QtCore.Qt.AlignmentFlag.AlignRight |
                     QtCore.Qt.AlignmentFlag.AlignVCenter
                 )
@@ -210,12 +204,10 @@ class Tareas:
     @staticmethod
     def selecTarea():
         """
-                Evento disparado al hacer clic en una fila de la tabla de tareas.
-                Extrae la información de las celdas de dicha fila y la proyecta en los inputs de arriba.
-                """
-
+        Evento disparado al hacer clic en una fila de la tabla de tareas.
+        Extrae la información de las celdas de dicha fila y la proyecta en los inputs de arriba.
+        """
         try:
-
             fila = globals.ui.tabTareas.currentRow()
 
             if fila < 0:
@@ -226,28 +218,18 @@ class Tareas:
             registro = Conexion.cargarUnaTarea(idTarea)
 
             if registro:
-
                 globals.ui.lblid.setText(str(registro[0]))
+                globals.ui.lineCliente.setText(str(registro[1]))
+                globals.ui.lineEdmpleado.setText(str(registro[2]))
+                globals.ui.lineServicio.setText(str(registro[3]))
+                globals.ui.lineHoras.setText(str(registro[4]))
+                globals.ui.linePrecio_Hora.setText(str(registro[5]))
 
-                globals.ui.lineCliente.setText(
-                    str(registro[1])
-                )
+                # 🎯 ¡AHORA SÍ! Como conexion.py ya devuelve el estado, lo leemos directamente:
+                estado_real = str(registro[6]).strip()
 
-                globals.ui.lineEdmpleado.setText(
-                    str(registro[2])
-                )
-
-                globals.ui.lineServicio.setText(
-                    str(registro[3])
-                )
-
-                globals.ui.lineHoras.setText(
-                    str(registro[4])
-                )
-
-                globals.ui.linePrecio_Hora.setText(
-                    str(registro[5])
-                )
+                # Seteamos el combobox con el valor real ("en curso", "pendiente", "finalizado", etc.)
+                globals.ui.cmbEstado.setCurrentText(estado_real)
 
         except Exception as e:
             print("Error seleccionando tarea:", e)
@@ -294,47 +276,71 @@ class Tareas:
 
     @staticmethod
     def modifTarea():
-        """
-                Lee el ID activo del label y actualiza la tarea correspondiente en la BD
-                con los nuevos valores introducidos en el formulario.
-                """
-
         try:
+            # 1. Recuperamos el ID de la tarea
+            idTarea = globals.ui.lblid.text().strip()
 
-            idTarea = globals.ui.lblid.text()
+            # 2. Recuperamos los textos de los campos de la pantalla
+            nombreCliente = globals.ui.lineCliente.text().strip()
+            nombreEmpleado = globals.ui.lineEdmpleado.text().strip()
 
-            if not idTarea:
-                QtWidgets.QMessageBox.warning(
-                    None,
-                    "Error",
-                    "Selecciona una tarea"
-                )
-                return
-
-            cliente = globals.ui.lineCliente.text().strip()
-            empleado = globals.ui.lineEdmpleado.text().strip()
             servicio = globals.ui.lineServicio.text().strip()
             horas = globals.ui.lineHoras.text().strip()
             precio = globals.ui.linePrecio_Hora.text().strip()
+            estado = globals.ui.cmbEstado.currentText().strip()
 
-            datos = [
-                idTarea,
-                cliente,
-                empleado,
-                servicio,
-                horas,
-                precio
-            ]
+            # ==========================================================
+            # 🔍 ESTRATEGIA INTELIGENTE: ¿Es ya un ID numérico o es un Nombre?
+            # ==========================================================
+            # Para el Cliente:
+            if nombreCliente.isdigit():
+                cliente = int(nombreCliente)  # Si es un número (ej: "1"), lo usamos directamente
+            else:
+                cliente = Conexion.obtenerIdPorNombre(nombreCliente)  # Si es texto, buscamos su ID
 
-            if Conexion.modifTarea(datos):
+            # Para el Empleado:
+            if nombreEmpleado.isdigit():
+                empleado = int(nombreEmpleado)
+            else:
+                empleado = Conexion.obtenerIdPorNombre(nombreEmpleado)
+            # ==========================================================
 
-                QtWidgets.QMessageBox.information(
-                    None,
-                    "OK",
-                    "Tarea modificada"
+            # Controles de seguridad descriptivos
+            if not cliente:
+                QtWidgets.QMessageBox.warning(
+                    None, "Error", f"No se pudo validar el cliente '{nombreCliente}'."
                 )
+                return
 
-                Tareas.cargarTabla()
+            if not empleado:
+                QtWidgets.QMessageBox.warning(
+                    None, "Error", f"No se pudo validar el empleado '{nombreEmpleado}'."
+                )
+                return
+
+            if not servicio:
+                QtWidgets.QMessageBox.warning(None, "Error", "Servicio obligatorio")
+                return
+
+            try:
+                horas_float = float(horas)
+                precio_float = float(precio)
+            except ValueError:
+                QtWidgets.QMessageBox.warning(None, "Error", "Horas o Precio incorrectos")
+                return
+
+            # 3. Empaquetamos los 7 datos para conexion.py
+            row = [idTarea, cliente, empleado, servicio, horas_float, precio_float, estado]
+
+            if idTarea != "":
+                if Conexion.modifTarea(row):
+                    QtWidgets.QMessageBox.information(None, "Éxito", "Tarea modificada con éxito")
+                    Tareas.cargarTabla()
+                    Tareas.limpiarFormulario()
+                else:
+                    QtWidgets.QMessageBox.warning(None, "Error", "No se pudo modificar en la base de datos")
+            else:
+                QtWidgets.QMessageBox.warning(None, "Aviso", "No se ha seleccionado ninguna tarea para modificar")
 
         except Exception as e:
             print("Error modificando tarea:", e)

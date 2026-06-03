@@ -171,17 +171,20 @@ class Conexion:
     @staticmethod
     def listadoTareas():
         """
-        Recupera el listado completo de tareas registradas para mostrarlas en la tabla.
-
-        Returns:
-            list: Colección de tareas en listas individuales de 6 columnas.
+        Consulta todos los registros de la tabla tareas asegurando
+        el orden exacto de los índices del 0 al 6.
         """
         listado = []
         query = QtSql.QSqlQuery()
-        query.prepare("SELECT idTarea, idCliente, idEmpleado, servicio, horas, precio FROM tareas")
+
+        query.prepare(
+            "SELECT idTarea, idCliente, idEmpleado, servicio, horas, precio, estado FROM tareas ORDER BY idTarea ASC")
+
         if query.exec():
             while query.next():
-                listado.append([query.value(i) for i in range(6)])
+                # Guardamos los 7 campos de la base de datos
+                row = [query.value(i) for i in range(7)]
+                listado.append(row)
         return listado
 
     @staticmethod
@@ -208,19 +211,24 @@ class Conexion:
     @staticmethod
     def cargarUnaTarea(idTarea):
         """
-        Obtiene los datos completos de una tarea específica localizándola por su clave numérica.
-
-        Args:
-            idTarea (int/str): Identificador único de la tarea.
-        Returns:
-            list/None: Registro de la tarea o None si no existe.
+        Busca una tarea por su ID y devuelve todos sus campos,
+        ¡INCLUYENDO EL ESTADO AL FINAL!
         """
-        query = QtSql.QSqlQuery()
-        query.prepare("SELECT * FROM tareas WHERE idTarea = :id")
-        query.bindValue(":id", idTarea)
-        if query.exec() and query.next():
-            return [query.value(i) for i in range(6)]
-        return None
+        try:
+            query = QtSql.QSqlQuery()
+            # 🚨 ASEGÚRATE DE QUE PONE 'estado' ANTES DEL 'FROM'
+            query.prepare(
+                "SELECT idTarea, idCliente, idEmpleado, servicio, horas, precio, estado FROM tareas WHERE idTarea = ?")
+            query.addBindValue(int(idTarea))
+
+            if query.exec():
+                if query.next():
+                    # Devolvemos los 7 campos de la base de datos (del 0 al 6)
+                    return [query.value(i) for i in range(7)]
+            return None
+        except Exception as e:
+            print("Error en cargarUnaTarea de conexion.py:", e)
+            return None
 
     @staticmethod
     def delTarea(idTarea):
@@ -238,26 +246,37 @@ class Conexion:
         return query.exec()
 
     @staticmethod
-    def modifTarea(datos):
+    def modifTarea(tarea):
         """
-        Actualiza el contenido de una tarea en base a su ID.
-
-        Args:
-            datos (list): Campos modificados ordenados [idTarea, cliente, empleado, servicio, horas, precio].
-        Returns:
-            bool: True en caso de éxito.
+        Recibe la lista con [id, cliente, empleado, servicio, horas, precio, estado]
+        y actualiza el registro en SQLite.
         """
-        query = QtSql.QSqlQuery()
-        query.prepare("UPDATE tareas SET idCliente=:cli, idEmpleado=:emp, servicio=:serv, "
-                      "horas=:h, precio=:p WHERE idTarea=:id")
-        query.bindValue(":cli", datos[1])
-        query.bindValue(":emp", datos[2])
-        query.bindValue(":serv", datos[3])
-        query.bindValue(":h", datos[4])
-        query.bindValue(":p", datos[5])
-        query.bindValue(":id", datos[0])
-        return query.exec()
+        try:
+            query = QtSql.QSqlQuery()
+            # Añadimos el campo estado antes del WHERE
+            query.prepare("""
+                    UPDATE tareas 
+                    SET idCliente = ?, idEmpleado = ?, servicio = ?, horas = ?, precio = ?, estado = ? 
+                    WHERE idTarea = ?
+                """)
 
+            # Enlazamos los valores respetando el orden estricto de la Query SQL:
+            query.addBindValue(int(tarea[1]))  # idCliente  -> tarea[1]
+            query.addBindValue(int(tarea[2]))  # idEmpleado -> tarea[2]
+            query.addBindValue(str(tarea[3]))  # servicio   -> tarea[3]
+            query.addBindValue(float(tarea[4]))  # horas      -> tarea[4]
+            query.addBindValue(float(tarea[5]))  # precio     -> tarea[5]
+            query.addBindValue(str(tarea[6]))  # estado     -> tarea[6] (¡Ya no dará Out of Range!)
+            query.addBindValue(int(tarea[0]))  # idTarea    -> tarea[0] (Condición WHERE)
+
+            if query.exec():
+                return True
+            else:
+                print("Error SQL en modifTarea:", query.lastError().text())
+                return False
+        except Exception as e:
+            print("Error en modifTarea de conexion.py:", e)
+            return False
     @staticmethod
     def proximoIdTarea():
         """
