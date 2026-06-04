@@ -43,11 +43,17 @@ class Main(QtWidgets.QMainWindow):
 
         # Conexión del Informe PDF (Entrega 3)
 
+        if hasattr(globals.ui, 'actionListado_usuarios'):
+            globals.ui.actionListado_usuarios.triggered.connect(self.report.reportUsuarios)
+
         if hasattr(globals.ui, 'actionListado_empleados'):
-            globals.ui.actionListado_empleados.triggered.connect(self.report.reportUsuarios)
+            globals.ui.actionListado_empleados.triggered.connect(self.report.reportEmpleados)
+
         if hasattr(globals.ui, 'actionListado_tareas'):
             globals.ui.actionListado_tareas.triggered.connect(self.report.reportTareas)
 
+        if hasattr(globals.ui, 'actionListado_clientes'):
+            globals.ui.actionListado_clientes.triggered.connect(self.report.reportClientes)
 
         # 4. Conexión de Botones CRUD (Pestaña Usuarios)
         globals.ui.btnAlta.clicked.connect(Usuarios.addUsuario)

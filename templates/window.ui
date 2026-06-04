@@ -593,8 +593,10 @@
     <property name="title">
      <string>Informes</string>
     </property>
-    <addaction name="actionListado_empleados"/>
+    <addaction name="actionListado_usuarios"/>
     <addaction name="actionListado_tareas"/>
+    <addaction name="actionListado_clientes"/>
+    <addaction name="actionListado_empleados"/>
    </widget>
    <addaction name="menuArchivo"/>
    <addaction name="menuAcerca_de"/>
@@ -605,14 +607,24 @@
     <string>Salir</string>
    </property>
   </action>
-  <action name="actionListado_empleados">
+  <action name="actionListado_usuarios">
    <property name="text">
-    <string>Listado Empleados</string>
+    <string>Listado Usuarios</string>
    </property>
   </action>
   <action name="actionListado_tareas">
    <property name="text">
     <string>Listado Tareas</string>
+   </property>
+  </action>
+  <action name="actionListado_clientes">
+   <property name="text">
+    <string>Listado Clientes</string>
+   </property>
+  </action>
+  <action name="actionListado_empleados">
+   <property name="text">
+    <string>Listado Empleados</string>
    </property>
   </action>
  </widget>
